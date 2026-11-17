@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow"><title>Gateway · Administration</title>
+  <link rel="stylesheet" href="/style.css"><script src="/admin.js" defer></script></head>
+<body>
+<main>
+  <p class="eyebrow">GATEWAY / ADMINISTRATION</p><h1>Account control.</h1>
+  <p>Lifetime token grants and customer access. Inference metering is not enabled yet.</p>
+  <section class="panel" id="admin-login-panel">
+    <h2>Administrator login</h2><p>Use your separate <code>sk-admin-…</code> key. Never a provider or customer key.</p>
+    <form id="admin-login"><label for="admin-key">Admin key</label>
+      <input id="admin-key" type="password" autocomplete="off" spellcheck="false" required>
+      <button class="primary" type="submit">Unlock administration</button></form>
+  </section>
+  <p id="admin-status" role="status" aria-live="polite"></p>
+  <div id="admin-controls" hidden>
+    <button class="secondary" id="admin-refresh">Refresh accounts</button>
+    <button class="secondary" id="admin-logout">Lock administration</button>
+    <section class="panel">
+      <h2>Create a customer key</h2>
+      <form id="create-user"><label for="customer-name">Customer name</label><input id="customer-name" maxlength="100" required>
+      <label for="grant-tokens">Initial lifetime tokens</label><input id="grant-tokens" type="number" min="1" max="1000000000" step="1" value="10000000" required>
+      <label for="grant-reason">Reason / purchase reference (no secrets)</label><input id="grant-reason" minlength="3" maxlength="300" required>
+      <button class="primary" type="submit">Create key and grant tokens</button></form>
+      <div id="new-key-box" hidden><p>Customer key shown once. Copy and deliver privately.</p>
+        <input id="new-key" readonly aria-label="New customer key"><button class="secondary" id="copy-key">Copy key</button>
+        <button class="secondary" id="dismiss-key">Hide and clear key</button></div>
+    </section>
+    <section class="panel"><h2>Customers</h2><p>Latest 100 accounts. Counts come from the server ledger; they are not editable usage figures.</p>
+      <div id="customer-list"></div>
+    </section>
+  </div>
+</main>
+</body></html>
