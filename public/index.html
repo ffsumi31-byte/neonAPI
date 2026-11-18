@@ -121,11 +121,11 @@
     <section class="panel download-panel" id="downloads">
       <div><p class="eyebrow">APIDUCK CONNECTOR</p><h2>Use your account in Claude Code.</h2>
         <p>Small Windows and Linux launchers connect Claude Code to <code>https://apiduh.netlify.app</code> using your customer key. Provider keys stay on the server; never enter a DeepSeek/OpenRouter key in the download.</p>
-        <p class="download-note">Connecting to hosted inference requires administrator enablement. The connector packages require an existing Claude Code installation.</p>
+        <p class="download-note">Requires Claude Code. Hosted requests require administrator enablement. <a href="https://github.com/ffsumi31-byte/neonAPI/releases/tag/v0.1.0">Release notes and checksums</a></p>
       </div>
       <div class="platforms">
-        <a class="download-link" href="https://github.com/ffsumi31-byte/neonAPI/releases" rel="noopener">Windows <small>Check release assets</small></a>
-        <a class="download-link" href="https://github.com/ffsumi31-byte/neonAPI/releases" rel="noopener">Linux <small>Check release assets</small></a>
+        <a class="download-link" href="https://github.com/ffsumi31-byte/neonAPI/releases/download/v0.1.0/apiduck-windows.zip">Windows <small>ZIP · v0.1.0</small></a>
+        <a class="download-link" href="https://github.com/ffsumi31-byte/neonAPI/releases/download/v0.1.0/apiduck-linux.tar.gz">Linux <small>TAR.GZ · v0.1.0</small></a>
       </div>
     </section>
     <section id="setup" class="help-section"><p class="eyebrow">A CLEAR START</p><h2>Before you connect.</h2>
@@ -133,7 +133,7 @@
         <summary>How do I set up Claude Code?</summary>
         <ol>
           <li><a href="https://code.claude.com/docs/en/setup">Install Claude Code from Anthropic</a>.</li>
-          <li>Check GitHub Releases for the Windows ZIP or Linux tarball. Extract the package and open a terminal in your project directory.</li>
+          <li>Download the connector for your operating system. Extract it and open a terminal in your project directory.</li>
           <li>On Windows, run <code>&amp; "C:\path\to\Start-ApiDuck.ps1"</code> in PowerShell. On Linux, run <code>bash /path/to/start-apiduck.sh</code>.</li>
           <li>Enter your ApiDuck customer key at the hidden prompt. Live requests require hosted inference to be enabled.</li>
         </ol>

@@ -118,3 +118,4 @@ meter{accent-color:#2bdd9f}
 .help-section li + li { margin-top: 0.35rem; }
 .help-section li a { color: var(--lime); text-decoration: underline; }
 .help-section li code { overflow-wrap: anywhere; }
+.download-note a { color: var(--lime); text-decoration: underline; }
