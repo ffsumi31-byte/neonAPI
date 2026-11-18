@@ -14,7 +14,7 @@ $secureKey = Read-Host 'Customer API key (sk-gw-...) — input hidden' -AsSecure
 $customerKey = [Net.NetworkCredential]::new('', $secureKey).Password
 if ($customerKey -cnotmatch '^sk-gw-[a-f0-9]{64}$') {
     $customerKey = $null
-    Write-Error 'Invalid customer key format. Use the key issued by the ApiDuck administrator.'
+    Write-Error 'Invalid customer key format. Use the key issued by the Apiduh administrator.'
     exit 1
 }
 

@@ -1,4 +1,4 @@
-# ApiDuck Claude Code connectors
+# Apiduh Claude Code connectors
 
 These scripts launch the already-installed Claude Code CLI against
 `https://apiduh.netlify.app`. They ask for an individual `sk-gw-…` customer key

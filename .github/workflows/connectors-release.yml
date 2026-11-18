@@ -1,4 +1,4 @@
-name: Publish ApiDuck connectors
+name: Publish Apiduh connectors
 
 on:
   push:
@@ -50,4 +50,4 @@ jobs:
             fi
           fi
           gh release create "$tag" release/apiduck-windows.zip release/apiduck-linux.tar.gz release/SHA256SUMS.txt \
-            --target "$GITHUB_SHA" --title "ApiDuck $tag" --generate-notes
+            --target "$GITHUB_SHA" --title "Apiduh $tag" --generate-notes

@@ -13,7 +13,7 @@ if [[ -z "${API_DUCK_CUSTOMER_KEY:-}" ]]; then
 fi
 if [[ ! "$API_DUCK_CUSTOMER_KEY" =~ ^sk-gw-[a-f0-9]{64}$ ]]; then
   unset API_DUCK_CUSTOMER_KEY
-  echo "Invalid customer key format. Use the key issued by the ApiDuck administrator." >&2
+  echo "Invalid customer key format. Use the key issued by the Apiduh administrator." >&2
   exit 1
 fi
 
