@@ -29,3 +29,18 @@ test("Unconfigured admin endpoint never reaches the database or reveals a key", 
     assert.ok(!(await result.text()).includes(key));
   } finally { if (previous !== undefined) process.env.ADMIN_ACCESS_KEY = previous; }
 });
+test("Admin endpoint distinguishes missing credentials from blocked writes without exposing secrets", async () => {
+  const previous = process.env.ADMIN_ACCESS_KEY;
+  process.env.ADMIN_ACCESS_KEY = key;
+  try {
+    const bad = await admin(request("GET", { Authorization: `Bearer sk-admin-${"b".repeat(64)}` }));
+    assert.equal(bad.status, 401);
+    assert.match((await bad.json()).error, /does not match/);
+    const blocked = await admin(request("POST", { Origin: "https://other.example", "Content-Type": "application/json" }));
+    assert.equal(blocked.status, 403);
+    assert.match((await blocked.json()).error, /origin/);
+  } finally {
+    if (previous === undefined) delete process.env.ADMIN_ACCESS_KEY;
+    else process.env.ADMIN_ACCESS_KEY = previous;
+  }
+});

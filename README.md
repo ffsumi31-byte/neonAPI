@@ -1,15 +1,14 @@
 # Cloud portal: lifetime accounts, phase 1
 
-**Update:** a guarded hosted DeepSeek `/v1/messages` route and reservation ledger
-have been added. They are disabled by default and have not been integration-tested
-against a live database/provider. Read [METERING.md](METERING.md) before enabling.
-Older "not implemented" wording below describes the original phase-1 state.
-The portal now includes a manual server-backed token tracker refresh.
+**Update:** a guarded hosted DeepSeek `/v1/messages` route, authenticated
+`/v1/messages/count_tokens` route, and reservation ledger are included. Hosted
+inference is disabled by default and has not been integration-tested against a
+live database/provider. Read [METERING.md](METERING.md) before enabling.
 
 Administrator page: `/admin.html`. Follow [ADMIN.md](ADMIN.md) to create a separate
 admin credential, configure Netlify, apply the audit schema, and manage customer keys.
 
-This is a separate Netlify-ready website and account API, not the existing local gateway.
+This is a Netlify website and account/API service.
 It provides customer-key login and a PostgreSQL-backed lifetime token allowance.
 Inference is disabled by default. Do not enable it until the deployment and
 metering validation described in [METERING.md](METERING.md) is complete.
@@ -26,8 +25,8 @@ The UI says this explicitly; it does not simulate usage or claim a paid service 
 1. Create a hosted PostgreSQL database (for example through a provider you trust).
    Use its verified TLS connection URL. Database and Netlify usage may have costs.
 2. Run `schema.sql` using the database's SQL console.
-3. Import the repository in Netlify. Set **Base directory** to `cloud-app`
-   (leave it blank only if `cloud-app` itself is the repository root).
+3. Import `ffsumi31-byte/neonAPI` in Netlify. Leave **Base directory** blank;
+   this repository itself is the site root.
 4. Use these build settings (also recorded in `netlify.toml`):
    - **Build command:** `npm test` — this static site has no compilation step;
      the test suite is run as a deploy check.
@@ -39,7 +38,7 @@ The UI says this explicitly; it does not simulate usage or claim a paid service 
    - `DATABASE_URL` — hosted PostgreSQL TLS connection string.
    - `ADMIN_ACCESS_KEY` — separate admin credential generated with `npm run admin-key`.
    - `INFERENCE_ENABLED` — set to `false` initially.
-   - `DEEPSEEK_API_KEY` — only if later enabling hosted inference.
+   - `DEEPSEEK_API_KEY` — private shared provider credential used by the server function.
    - `MAX_PROVIDER_REQUEST_TOKENS` — only after deriving and validating the
      provider's hard per-request upper bound.
    Do not add provider/admin/database secrets as `VITE_*`, `NEXT_PUBLIC_*`,
@@ -47,18 +46,19 @@ The UI says this explicitly; it does not simulate usage or claim a paid service 
 6. Redeploy after setting variables. Netlify assigns an HTTPS `<your-site>.netlify.app` address.
    An example address is not owned or published until you create that project.
    Do not use drag-and-drop of `public` alone: it would omit the API functions.
-6. Open the assigned HTTPS URL. A custom domain is optional.
+7. Open the assigned HTTPS URL. `apiduh.netlify.app` is already the intended API host.
 
-No Netlify account, database, or deployed URL was created automatically. Do not
-set `INFERENCE_ENABLED=true` merely to make deployment appear complete; follow
-the live-database validation checklist in `METERING.md` first.
+The GitHub repository does not provision PostgreSQL or populate Netlify
+environment variables. Do not set `INFERENCE_ENABLED=true` merely to make
+deployment appear complete; follow the live-database validation checklist in
+`METERING.md` first.
 
 ## Issue a test customer, privately
 
 On your administrator computer, with Node.js 22+:
 
 ```powershell
-cd D:\local-ai-gateway\cloud-app
+cd D:\local-ai-gateway\github-ready
 npm install
 # Set DATABASE_URL privately in this terminal; do not paste it into chat.
 $env:DATABASE_URL = "<your database connection URL>"
@@ -83,16 +83,41 @@ or purchase webhook is connected. There is no public create-user/grant endpoint.
 Grants accumulate and never reset monthly or expire. Zero consumption remains
 zero until real usage events are implemented; this is not a billing test.
 
+## ApiDuck Claude Code connector downloads
+
+The website's Windows/Linux connector launchers target `https://apiduh.netlify.app`.
+They prompt for each customer's `sk-gw-…` key and do not save it or contain any
+provider key. They require the customer to install Claude Code separately.
+
+After committing the connector files, create/publish a GitHub Release with a tag
+such as `v0.1.0`. `.github/workflows/connectors-release.yml` will attach
+`apiduck-windows.zip`, `apiduck-linux.tar.gz`, and `SHA256SUMS.txt`. The website
+links to this repository's Releases page. Until the first tagged release, there
+are no downloadable assets there.
+
+## Provider keys and hosted API
+
+Set the shared DeepSeek provider key as `DEEPSEEK_API_KEY` in Netlify's
+**server-side Functions environment only**. Do not put it in `public/`, client
+JavaScript, GitHub, or any download. Claude Code sends the customer's `sk-gw-…`
+key to the hosted API; the server validates the account and privately calls
+DeepSeek. The API host is `https://apiduh.netlify.app`.
+
+The live route will still reject requests until PostgreSQL/schema and the
+validated reservation ceiling are configured, and `INFERENCE_ENABLED=true` is
+deliberately enabled only after those checks. See `METERING.md`.
+
 ## Important before public launch
 
-The hosted `/v1/messages` endpoint exists but is **disabled by default**. Its
+The hosted `/v1/messages` and `/v1/messages/count_tokens` endpoints exist but
+inference is **disabled by default**. Their
 automated tests use mocked database interactions; they do not establish live
 PostgreSQL concurrency, Netlify runtime compatibility, provider accounting, or
 Claude streaming compatibility. Follow every pre-launch check in `METERING.md`.
 Do not enable paid inference until those checks pass.
 
 The hosted route currently meters DeepSeek main-provider usage only. OpenRouter
-helpers, dollar budgets, purchases, email login/recovery, and desktop installers
+helpers, dollar budgets, purchases, email login/recovery, and native desktop installers
 are not implemented. The local gateway is separate and bypasses this account
 database. Never distribute a local build containing provider credentials.
 

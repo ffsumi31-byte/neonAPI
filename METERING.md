@@ -45,6 +45,13 @@ and the customer's `sk-gw-…` key as its API key. Do NOT use `local-gateway`.
 The existing HTTP local server is independent and bypasses this database; it must
 not be included in a production bundle with your provider keys.
 
+For ApiDuck's hosted site use `https://apiduh.netlify.app` as the Anthropic base
+URL. Its authenticated `/v1/messages/count_tokens` companion uses offline
+`cl100k_base` tiktoken plus approximate message framing and does not debit tokens.
+It is a compatibility estimate, not DeepSeek's official billed-token count.
+Provider credentials must be configured as Netlify server-side function
+environment variables; no provider key belongs in a download or browser bundle.
+
 Non-streaming and buffered SSE responses expose:
 - `X-Gateway-Tokens-Used`
 - `X-Gateway-Tokens-Remaining`

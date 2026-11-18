@@ -8,6 +8,17 @@ const json = (body, status = 200) => Response.json(body, {
 });
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 
+function authFailure(status) {
+  switch (status) {
+    case 503: return "ADMIN_ACCESS_KEY is missing or invalid in this site's Functions environment.";
+    case 400: return "Use the HTTPS admin page.";
+    case 401: return "Admin key does not match this site's ADMIN_ACCESS_KEY. Check the Production/Functions value and redeploy.";
+    case 403: return "Admin write blocked: page origin does not match the API origin. Open the admin page on this same HTTPS site.";
+    case 415: return "Admin write must use application/json.";
+    default: return "Admin request rejected.";
+  }
+}
+
 function databaseFailure(error) {
   // Return only a safe category to the browser; never expose SQL, hostnames,
   // credentials, or raw PostgreSQL error messages.
@@ -25,7 +36,7 @@ function databaseFailure(error) {
 
 export default async function admin(req) {
   const auth = authorizeAdmin(req);
-  if (auth !== 200) return json({ error: auth === 503 ? "Admin service is not configured." : "Admin authentication or request check failed." }, auth);
+  if (auth !== 200) return json({ error: authFailure(auth) }, auth);
   if (!["GET", "POST"].includes(req.method)) return json({ error: "Method not allowed" }, 405);
   try {
     if (req.method === "GET") {
